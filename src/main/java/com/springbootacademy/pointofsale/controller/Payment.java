@@ -1,4 +1,4 @@
-package com.springbootacademy.pointofsale.Controller;
+package com.springbootacademy.pointofsale.controller;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
