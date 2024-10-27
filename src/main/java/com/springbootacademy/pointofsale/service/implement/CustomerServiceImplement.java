@@ -8,6 +8,9 @@ import com.springbootacademy.pointofsale.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class CustomerServiceImplement implements CustomerService {
     @Autowired
@@ -25,12 +28,6 @@ public class CustomerServiceImplement implements CustomerService {
         customerRepository.save(customer);
         System.out.println("Saved the customer");
         return customer.getCustomerAddress();
-    }
-
-    @Override
-    public String deleteCustomer(CustomerDTO customerDTO) {
-        customerRepository.deleteById(customerDTO.getCustomerId());
-        return "Delete";
     }
 
     @Override
@@ -66,5 +63,54 @@ public class CustomerServiceImplement implements CustomerService {
         } else {
             throw new RuntimeException("Not found");
         }
+    }
+
+    @Override
+    public List<CustomerDTO> getAllCustomers() {
+        List<Customer> getAllCustomers = customerRepository.findAll();
+        List<CustomerDTO> customerDTOList = new ArrayList<>();
+        for (Customer customer: getAllCustomers){
+            CustomerDTO customerDTO = new CustomerDTO(
+                    customer.getCustomerId(),
+                    customer.getCustomerName(),
+                    customer.getCustomerAddress(),
+                    customer.getCustomerSalary(),
+                    customer.getContactNumber(),
+                    customer.getNic(),
+                    customer.isActive()
+            );
+            customerDTOList.add(customerDTO);
+        }
+        return customerDTOList;
+    }
+
+    @Override
+    public String deleteCustomer(int customerId) {
+        if (customerRepository.existsById(customerId)){
+            customerRepository.deleteById(customerId);
+            return "Deleted "+customerId+" ID";
+        }else {
+            throw new RuntimeException("Not Found");
+        }
+    }
+
+    @Override
+    public List<CustomerDTO> getAllCustomersByStatus(boolean activeStatus) {
+        List<Customer> customerList = customerRepository.findAllByActive(activeStatus);
+        List<CustomerDTO> customerDTOList = new ArrayList<>();
+
+        for (Customer customer: customerList){
+            CustomerDTO customerDTO = new CustomerDTO(
+                    customer.getCustomerId(),
+                    customer.getCustomerName(),
+                    customer.getCustomerAddress(),
+                    customer.getCustomerSalary(),
+                    customer.getContactNumber(),
+                    customer.getNic(),
+                    customer.isActive()
+            );
+           customerDTOList.add(customerDTO);
+        }
+        return customerDTOList;
     }
 }
