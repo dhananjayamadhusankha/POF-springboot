@@ -1,6 +1,5 @@
 package com.springbootacademy.pointofsale.dto.response;
 
-import com.springbootacademy.pointofsale.entity.enums.MeasuringUnitType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ItemsSaveResponseDTO {
+public class ItemsGetResponseDTO {
     private int itemId;
     private String itemName;
     private double balanceQty;

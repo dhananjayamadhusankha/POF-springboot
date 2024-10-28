@@ -1,10 +1,11 @@
 package com.springbootacademy.pointofsale.service.implement;
 
 import com.springbootacademy.pointofsale.dto.request.ItemSaveRequestDTO;
-import com.springbootacademy.pointofsale.dto.response.ItemsSaveResponseDTO;
+import com.springbootacademy.pointofsale.dto.response.ItemsGetResponseDTO;
 import com.springbootacademy.pointofsale.entity.Item;
 import com.springbootacademy.pointofsale.repository.ItemRepository;
 import com.springbootacademy.pointofsale.service.ItemService;
+import com.springbootacademy.pointofsale.util.mappers.ItemMapper;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class ItemServiceImplement implements ItemService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private ItemMapper itemMapper;
+
     @Override
     public String saveItem(ItemSaveRequestDTO itemSaveRequestDTO) {
         Item item = modelMapper.map(itemSaveRequestDTO, Item.class);
@@ -33,12 +37,24 @@ public class ItemServiceImplement implements ItemService {
     }
 
     @Override
-    public List<ItemsSaveResponseDTO> getItemByNameAndStatus(String itemName) {
+    public List<ItemsGetResponseDTO> getItemByNameAndStatus(String itemName) {
         boolean status = true;
         List<Item> itemList = itemRepository.findAllByItemNameEqualsAndActiveStatusEquals(itemName, status);
         if (itemList.size() > 0){
-            List<ItemsSaveResponseDTO> itemsSaveResponseDTOList = modelMapper.map(itemList,new TypeToken<List<ItemsSaveResponseDTO>>() {}.getType());
-            return itemsSaveResponseDTOList;
+            List<ItemsGetResponseDTO> itemsGetResponseDTOList = modelMapper.map(itemList,new TypeToken<List<ItemsGetResponseDTO>>() {}.getType());
+            return itemsGetResponseDTOList;
+        }else {
+            throw new RuntimeException("Not found a item ny name and status");
+        }
+    }
+
+    @Override
+    public List<ItemsGetResponseDTO> getItemByNameAndStatusByMapstruct(String itemName) {
+        boolean status = true;
+        List<Item> itemList = itemRepository.findAllByItemNameEqualsAndActiveStatusEquals(itemName, status);
+        if (itemList.size() > 0){
+            List<ItemsGetResponseDTO> itemsGetResponseDTOList = itemMapper.entityToDtoList(itemList);
+            return itemsGetResponseDTOList;
         }else {
             throw new RuntimeException("Not found a item ny name and status");
         }
