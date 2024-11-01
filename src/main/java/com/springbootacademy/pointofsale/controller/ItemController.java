@@ -3,7 +3,10 @@ package com.springbootacademy.pointofsale.controller;
 import com.springbootacademy.pointofsale.dto.request.ItemSaveRequestDTO;
 import com.springbootacademy.pointofsale.dto.response.ItemsGetResponseDTO;
 import com.springbootacademy.pointofsale.service.ItemService;
+import com.springbootacademy.pointofsale.util.StandardResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,10 +19,19 @@ public class ItemController {
     @Autowired
     private ItemService itemService;
 
+//    @PostMapping("/save")
+//    public String saveItem(@RequestBody ItemSaveRequestDTO itemSaveRequestDTO){
+//        String save = itemService.saveItem(itemSaveRequestDTO);
+//        return save;
+//    }
+
     @PostMapping("/save")
-    public String saveItem(@RequestBody ItemSaveRequestDTO itemSaveRequestDTO){
+    public ResponseEntity<StandardResponse> saveItem(@RequestBody ItemSaveRequestDTO itemSaveRequestDTO){
         String save = itemService.saveItem(itemSaveRequestDTO);
-        return save;
+        return new ResponseEntity<StandardResponse>(
+            new StandardResponse(200, save, "Item saved successfully"),
+            HttpStatus.CREATED
+        );
     }
 
     @GetMapping(path = "/get_by_name", params = "name")

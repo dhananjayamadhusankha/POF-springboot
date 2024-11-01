@@ -3,7 +3,10 @@ package com.springbootacademy.pointofsale.controller;
 import com.springbootacademy.pointofsale.dto.CustomerDTO;
 import com.springbootacademy.pointofsale.dto.request.CustomerUpdateDTO;
 import com.springbootacademy.pointofsale.service.CustomerService;
+import com.springbootacademy.pointofsale.util.StandardResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -35,9 +38,12 @@ public class CustomerController {
     }
 
     @GetMapping(path = "/get_all_customers")
-    public List<CustomerDTO> getAllCustomers(){
+    public ResponseEntity<StandardResponse> getAllCustomers(){
         List<CustomerDTO> allCustomers = customerService.getAllCustomers();
-        return allCustomers;
+        return new ResponseEntity<StandardResponse>(
+            new StandardResponse(200, allCustomers, "Get all customers"),
+            HttpStatus.OK
+        );
     }
 
     @DeleteMapping(path = "delete/{id}")

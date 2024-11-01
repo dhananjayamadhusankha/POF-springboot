@@ -3,6 +3,7 @@ package com.springbootacademy.pointofsale.service.implement;
 import com.springbootacademy.pointofsale.dto.CustomerDTO;
 import com.springbootacademy.pointofsale.dto.request.CustomerUpdateDTO;
 import com.springbootacademy.pointofsale.entity.Customer;
+import com.springbootacademy.pointofsale.exception.NotFoundException;
 import com.springbootacademy.pointofsale.repository.CustomerRepository;
 import com.springbootacademy.pointofsale.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,27 +62,31 @@ public class CustomerServiceImplement implements CustomerService {
             );
             return customerDTO;
         } else {
-            throw new RuntimeException("Not found");
+            throw new NotFoundException("No customer found");
         }
     }
 
     @Override
     public List<CustomerDTO> getAllCustomers() {
         List<Customer> getAllCustomers = customerRepository.findAll();
-        List<CustomerDTO> customerDTOList = new ArrayList<>();
-        for (Customer customer: getAllCustomers){
-            CustomerDTO customerDTO = new CustomerDTO(
-                    customer.getCustomerId(),
-                    customer.getCustomerName(),
-                    customer.getCustomerAddress(),
-                    customer.getCustomerSalary(),
-                    customer.getContactNumber(),
-                    customer.getNic(),
-                    customer.isActive()
-            );
-            customerDTOList.add(customerDTO);
+        if (getAllCustomers.size()>0) {
+            List<CustomerDTO> customerDTOList = new ArrayList<>();
+            for (Customer customer : getAllCustomers) {
+                CustomerDTO customerDTO = new CustomerDTO(
+                        customer.getCustomerId(),
+                        customer.getCustomerName(),
+                        customer.getCustomerAddress(),
+                        customer.getCustomerSalary(),
+                        customer.getContactNumber(),
+                        customer.getNic(),
+                        customer.isActive()
+                );
+                customerDTOList.add(customerDTO);
+            }
+            return customerDTOList;
+        }else {
+            throw new NotFoundException("No customers");
         }
-        return customerDTOList;
     }
 
     @Override
