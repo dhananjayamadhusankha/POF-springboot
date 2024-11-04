@@ -1,5 +1,6 @@
 package com.springbootacademy.pointofsale.controller;
 
+import com.springbootacademy.pointofsale.dto.paginate.PaginatedResponseItemDTO;
 import com.springbootacademy.pointofsale.dto.request.ItemSaveRequestDTO;
 import com.springbootacademy.pointofsale.dto.response.ItemsGetResponseDTO;
 import com.springbootacademy.pointofsale.service.ItemService;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/item")
+@RequestMapping("api/v1/item")
 public class ItemController {
 
     @Autowired
@@ -44,5 +45,24 @@ public class ItemController {
     public List<ItemsGetResponseDTO> getItemByNameAndStatusByMapstruct(@RequestParam(name = "name") String itemName){
         List<ItemsGetResponseDTO> itemsGetResponseDTOList = itemService.getItemByNameAndStatusByMapstruct(itemName);
         return itemsGetResponseDTOList;
+    }
+
+    @GetMapping(path = "getAllItemsByActiveState", params = {"activeStatus", "page", "size"})
+    public ResponseEntity<StandardResponse> getAllItemsByActiveState(
+            @RequestParam(value = "activeStatus") boolean activeStatus,
+            @RequestParam(value = "page") int page,
+            @RequestParam(value = "size") int size){
+        PaginatedResponseItemDTO paginatedResponseItemDTO = itemService.getAllItemsByActiveStateWithPagineted(activeStatus, page, size);
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(200, paginatedResponseItemDTO, "All images by "+activeStatus), HttpStatus.OK
+        );
+    }
+
+    @GetMapping("all_items")
+    public ResponseEntity<StandardResponse> getAllItems(){
+        List<ItemsGetResponseDTO> itemsGetResponseDTOList = itemService.getAllItems();
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(200, itemsGetResponseDTOList, "All items"), HttpStatus.OK
+        );
     }
 }

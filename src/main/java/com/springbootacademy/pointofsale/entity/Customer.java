@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.Type;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 @Entity
 @Table(name = "customer")
@@ -32,6 +33,9 @@ public class Customer {
 
     @Column(name = "active_state", columnDefinition = "TINYINT default 1")
     private boolean active;
+
+    @OneToMany(mappedBy="customers")
+    private Set<Order> orders;
 
     public Customer() {
     }
